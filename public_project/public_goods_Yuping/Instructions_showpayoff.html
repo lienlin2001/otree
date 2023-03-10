@@ -1,0 +1,16 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Instruction: Show payoff{{ endblock }}
+{{ block content }}
+
+    <p style="font-size:20px">
+        每一回合的實驗將會以呈現專案的報酬組合(Show Payoff)、決策(Decision)、以及結果(Results)來進行。在決策時需要受試者選擇該回合是否要合作。
+        首先下圖是專案的報酬組合，最上方會顯示您在這個組別的角色，以及對應的相關報酬，上面部分是專案成功時選擇合作或不合作的報酬，下方則是專案失敗的報酬。
+    </p>
+    <img src="{{ static 'public_project/showpayoff.png' }}" height="500" width="1000">
+
+<p style="font-size:20px">
+        報酬組合的頁面將會顯示10秒，請專心瀏覽後根據此資訊在決策頁面進行選擇。
+    </p>
+    {{ next_button }}
+
+{{ endblock }}

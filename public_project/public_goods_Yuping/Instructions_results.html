@@ -1,0 +1,15 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Instruction: Results{{endblock }}
+{{ block content }}
+
+    <p style="font-size:20px">
+        下圖為結果頁面的例圖，實驗有些部分會顯示每位成員的選擇結果及報酬，有些則不會。
+    </p>
+    <img src="{{ static 'public_project/results.png' }}" height="720" width="1000">
+    <p style="font-size:20px">
+        結果頁面將會顯示10秒，10秒後將會直接跳到下個頁面。
+    </p>
+    {{ next_button }}
+
+
+{{ endblock }}

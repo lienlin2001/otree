@@ -1,0 +1,25 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Instruction{{ endblock }}
+{{ block content }}
+
+    <p style="font-size:20px">
+        以下的題目將會測試你對於實驗的了解。請看以下圖片回答問題。
+    </p>
+    <img src="{{ static 'public_project/test1.png' }}" height="400" width="1200">
+
+    在此任務中，團隊人數為？
+    若其中 3 人決定合作，則專案結果為？
+    若您決定合作，且最後專案失敗，則您的報酬為？
+    若您決定不合作，且最後專案成功，則您的報酬為？
+
+    <p>
+        {{ if player.test1 == C.ans1 }}
+            恭喜您答對了。<br>
+        {{ endif }}
+        本題正確答案為30。<br>
+
+    </p>
+    {{ next_button }}
+    {{ next_button }}
+
+{{ endblock }}

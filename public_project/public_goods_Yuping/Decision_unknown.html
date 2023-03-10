@@ -1,0 +1,83 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Decision{{ endblock }}
+{{ block content }}
+
+    <p style="font-size:20px">
+        這回合需要<b>{{group.threshold}}</b>位以上(含<b>{{group.threshold}}</b>位)參與者合作專案才會成功。
+        您的角色是<b>{{player.name}}</b>，您的角色的報酬是在此表格的<b>左邊數來第{{player.identity}}欄</b>。
+
+    </p>
+
+<table class='table table-bordered text-center'
+           style='width: auto; margin: auto; font-size:35px'>
+
+        <tr>
+            <th colspan=2>角色</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr>
+            <th rowspan=2>專案成功</th>
+            <th>合作</th>
+            <th>{{scenario_payoff1}}</th>
+            <th>{{scenario_payoff2}}</th>
+            <th>{{scenario_payoff3}}</th>
+            <th>{{scenario_payoff4}}</th>
+        </tr>
+        <tr>
+            <th>不合作</th>
+            <th>10</th>
+            <th>10</th>
+            <th>10</th>
+            <th>10</th>
+
+        </tr>
+        <tr>
+            <th rowspan=2>專案失敗</th>
+            <th>5</th>
+            <th>5</th>
+            <th>5</th>
+            <th>5</th>
+        </tr>
+        <tr>
+            <th colspan=2>條件</th>
+            <th colspan=4><b>{{group.threshold}}</b>位以上</th>
+        </tr>
+
+    </table>
+
+    <p style="font-size:20px">
+        請選擇您在這回合要合作還是不合作。
+    </p>
+
+    <button name="cooperate" value="True" class="btn btn-primary btn-large">合作</button>
+    <button name="cooperate" value="False" class="btn btn-primary btn-large">不合作</button>
+
+    <div hidden>
+        {{ formfield player.reaction_time }}
+    </div>
+
+    <script>
+        var start_time = Date.now() // 回傳自 1970/01/01 00:00:00 UTC 起經過的毫秒數。
+
+        setInterval( // calls a function at specified intervals
+            function() {
+                // 當下時間減掉起算時間（start_time），即為經過時長
+                var time = (Date.now() - start_time) / 1000 // 因原數字為毫秒，需除以 1000 取得秒數。
+
+                // 每秒不斷更新 reaction_time
+                $('#id_reaction_time').val(time.toFixed(1))
+                // JavaScript toFixed() Method: Convert a number into a string, keeping only N decimals
+
+                var timeout_sec = {{ C.timeout_sec_decision }} // define variable
+                var time_integer = Math.ceil(time) // get the integer
+            },
+            0.1 * 1000 // 每 0.1秒呼叫一次function，所以如需更精確或更粗略，可調整成 0.01 * 1000 或 1 * 1000。（同時注意toFixed()）
+            )
+        // code is copied from Chen's LAB
+    </script>
+
+
+{{ endblock }}

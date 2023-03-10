@@ -1,0 +1,15 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Instruction: Decision{{ endblock }}
+{{ block content }}
+
+    <p style="font-size:20px">
+        下圖為決策頁面的例圖，上方的欄位在某些實驗部分會顯示每位團隊成員各自的角色及對應的報酬，有些則不會。下方的表格與前一頁的報酬組合完全相同。
+    </p>
+    <img src="{{ static 'public_project/decision.png' }}" height="600" width="1000">
+    <p style="font-size:20px">
+        決策頁面將會限制您決策的時間，決策時間為20秒，請在時間內完成選擇。
+    </p>
+    {{ next_button }}
+
+
+{{ endblock }}

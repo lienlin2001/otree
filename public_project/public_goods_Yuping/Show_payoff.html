@@ -1,0 +1,55 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Show Payoff{{ endblock }}
+{{ block content }}
+   <p style="font-size:20px">
+       這回合需要<b>{{group.threshold}}</b>位以上(含<b>{{group.threshold}}</b>位)參與者合作專案才會成功。
+       您的角色是<b>{{player.name}}</b>。
+
+    </p>
+
+
+<table class='table table-bordered text-center'
+           style='width: auto; margin: auto; font-size:35px'>
+
+
+        <tr>
+            <th colspan=2>角色</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+
+        </tr>
+
+        <tr>
+            <th rowspan=2>專案成功</th>
+            <th>合作</th>
+            <th>{{scenario_payoff1}}</th>
+            <th>{{scenario_payoff2}}</th>
+            <th>{{scenario_payoff3}}</th>
+            <th>{{scenario_payoff4}}</th>
+        </tr>
+        <tr>
+            <th>不合作</th>
+            <th>10</th>
+            <th>10</th>
+            <th>10</th>
+            <th>10</th>
+
+        </tr>
+        <tr>
+            <th colspan=2>專案失敗</th>
+            <th>5</th>
+            <th>5</th>
+            <th>5</th>
+            <th>5</th>
+        </tr>
+        <tr>
+            <th colspan=2>條件</th>
+            <th colspan=4><b>{{group.threshold}}</b>位以上</th>
+        </tr>
+    </table>
+
+
+
+{{ endblock }}

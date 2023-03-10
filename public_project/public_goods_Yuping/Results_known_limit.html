@@ -1,0 +1,71 @@
+{{ block title }}Results{{ endblock }}
+{{ block content }}
+
+<p style="font-size:20px">
+    {{ if group.voting_result >= group.threshold }}
+        剛才的專案您的報酬是在此表格的左邊數來第<b>{{player.identity}}</b>欄。
+        專案最終結果是 <b>{{group.voting_result}}</b>人選擇合作，超過<b>{{group.threshold}}</b>人的標準。
+        專案成功! 您可以得到: <b>{{ player.actual_payoff }}</b>。
+
+
+    {{else}}
+        剛才的專案您的報酬是在此表格的左邊數來第<b>{{player.identity}}</b>欄。
+        專案最終結果是 <b>{{group.voting_result}}</b>人選擇合作，低於<b>{{group.threshold}}</b>人的標準。
+        專案失敗， 您可以得到: <b>{{player.actual_payoff}}</b>。
+    {{ endif }}
+</p>
+
+    <table class='table table-bordered text-center'
+           style='width: auto; margin: auto; font-size:35px'>
+
+            <tr>
+                <th colspan=2>角色</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <th rowspan=2>專案成功</th>
+                <th>合作</th>
+                <th><p class="light">{{scenario_payoff1}}</p></th>
+                <th><p class="light">{{scenario_payoff2}}</p></th>
+                <th><p class="light">{{scenario_payoff3}}</p></th>
+                <th><p class="light">{{scenario_payoff4}}</p></th>
+            </tr>
+            <tr>
+                <th>不合作</th>
+                <th>10</th>
+                <th>10</th>
+                <th>10</th>
+                <th>10</th>
+
+            </tr>
+            <tr>
+                <th colspan=2>專案失敗</th>
+                <th>5</th>
+                <th>5</th>
+                <th>5</th>
+                <th>5</th>
+            </tr>
+            <tr>
+                <th colspan=2>選擇</th>
+                <th>{{decision1}}</th>
+                <th>{{decision2}}</th>
+                <th>{{decision3}}</th>
+                <th>{{decision4}}</th>
+            </tr>
+            <tr>
+                <th colspan=2>報酬</th>
+                <th>{{actual_payoff1}}</th>
+                <th>{{actual_payoff2}}</th>
+                <th>{{actual_payoff3}}</th>
+                <th>{{actual_payoff4}}</th>
+            </tr>
+
+        </table>
+
+        {{ next_button }}
+
+
+{{ endblock }}

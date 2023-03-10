@@ -1,0 +1,13 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Instruction 2{{ endblock }}
+{{ block content }}
+
+    <p style="font-size:20px">
+        恭喜您完成第一階段的實驗，下一階段將會再次進行與上一階段相同的實驗，只是個部份的順序可能會不同，以及您的組員將會重新分配。
+        在這階段您的角色是{{player.name}}，並會在接下來的回合皆維持相同。
+
+    </p>
+
+    {{ next_button }}
+
+{{ endblock }}

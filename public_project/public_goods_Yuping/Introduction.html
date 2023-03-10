@@ -1,0 +1,18 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Instruction{{ endblock }}
+{{ block content }}
+
+    <p style="font-size:20px">
+        這是一個關於「團隊決策」的研究。您將和其他幾位受試者組成一個團隊以完成專案，您的報酬將取決於您自己和其他團隊成員的決策。
+        具體而言，團隊成員將同時決定是否合作，若決定合作的人數超過所需人數，則專案成功；若決定合作的人數不足，則專案失敗 。
+        專案成功與否，將會影響每位成員的報酬；決定合作與否，也會影響每位成員的報酬。每個任務中，會有不同的報酬組合，
+        以及不同的成功標準。每位參與者的報酬取決於自己是否參與合作，以及專案是否成功，而我們會在決策時告知您的欄位。
+        如下圖你可以看到四位成員成功時的報酬皆不相同，而失敗與不合作的報酬皆相同。最上方的角色在實驗的不同部分有時會顯示有時則不會。
+        每一回合的實驗將會以呈現專案的報酬組合(Show Payoff)、決策(Decision)、以及結果(Results)來進行。在決策時需要受試者選擇該回合是否要合作。
+
+    </p>
+    <img src="{{ static 'public_project/introductions_showpayoff.png' }}" height="288" width="491" class="center">
+
+    {{ next_button }}
+
+{{ endblock }}

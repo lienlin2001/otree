@@ -1,5 +1,4 @@
-# Version 3/6
-
+# version 3/10 -3
 
 from otree.api import *
 
@@ -10,9 +9,12 @@ Public Project Game
 class C(BaseConstants):
     NAME_IN_URL = 'public_project_game'
     PLAYERS_PER_GROUP = 4
-    NUM_ROUNDS = 96  # total is 72 rounds with 12 different sessions
-    ROUNDS_IN_BLOCK = 48
+    NUM_ROUNDS = 96
+    ROUNDS_IN_SESSION = 48
+    NUM_BLOCKS = 6
     NUM_SESSIONS = 2
+    NUM_GROUPS = 2
+    ROUNDS_IN_BLOCK = 16
 
     # Timeout
     timeout_sec_showpayoff = 10
@@ -20,27 +22,17 @@ class C(BaseConstants):
     timeout_sec_results = 10
 
     # Payoff
-    payoff_hete_low = '-6-8-10-12-' # use string is because otree can't save list
-    payoff_hete_high = '-2-4-6-8-'
-    payoff_homo_low = '-9-9-9-9-'
-    payoff_homo_high ='-5-5-5-5-'
+    payoff_hete_low = '6-8-10-12' # use string is because otree can't save list
+    payoff_hete_high = '2-4-6-8'
+    payoff_homo_low = '9-9-9-9'
+    payoff_homo_high ='5-5-5-5'
     payoff_fail = 5
     payoff_notcoop = 10
     NUM_PAYOFF = 4 # Number of scenarios for payoff
 
-    # Threshold
-    thresholds = [1, 2, 3, 4]
-
-    # Round - should be removed
-    blocks = ['known_full', 'known_limit', 'unknown_limit']
-    known_full = [1, 9]
-    known_limit = [10, 18]
-    unknown_full = [19, 27]
-    unknown_limit = [28, 36]
-
 
 class Subsession(BaseSubsession):
-    scenarios = models.IntegerField() # save the list of the sequence of the scenario for the group
+    pass
 
 class Group(BaseGroup):
 
@@ -88,16 +80,44 @@ class Player(BasePlayer):
     test1_4 = models.IntegerField(label="請填入你的答案:")
     test1_5 = models.IntegerField(label="請填入你的答案:")
 
-# Functions
+class Scenarios_list(ExtraModel):
+    scenario1 = models.StringField()
+    threshold1 = models.FloatField()
+    block1 = models.StringField()
+    scenario2 = models.StringField()
+    threshold2 = models.FloatField()
+    block2 = models.StringField()
+    scenario3 = models.StringField()
+    threshold3 = models.FloatField()
+    block3 = models.StringField()
+    scenario4 = models.StringField()
+    threshold4 = models.FloatField()
+    block4 = models.StringField()
+    scenario5 = models.StringField()
+    threshold5 = models.FloatField()
+    block5 = models.StringField()
+    scenario6 = models.StringField()
+    threshold6 = models.FloatField()
+    block6 = models.StringField()
+    scenario7 = models.StringField()
+    threshold7 = models.FloatField()
+    block7 = models.StringField()
+    scenario8 = models.StringField()
+    threshold8 = models.FloatField()
+    block8 = models.StringField()
+    scenario9 = models.StringField()
+    threshold9 = models.FloatField()
+    block9 = models.StringField()
+    scenario10 = models.StringField()
+    threshold10 = models.FloatField()
+    block10 = models.StringField()
 
-def generate_scenarios(): # generate all the combination of the scenarios, there are total 16 scenarios
-    scenarios = []
-    scenario_payoff = [C.payoff_hete_high, C.payoff_hete_low, C.payoff_homo_high, C.payoff_homo_low]
-    thresholds = C.thresholds
-    for i in range(C.NUM_PAYOFF): # 0,1,2,3
-        for j in thresholds:
-            scenarios.append([scenario_payoff[i],j])
-    return scenarios
+# Function
+
+def decode_payoff_list(scenario): # decode the payoff list I saved
+    payoff_list = scenario[0].split('-')
+    payoff_list = [int(s.strip()) for s in payoff_list]
+    return payoff_list
 
 def assign_name(group: Group): # assign each player his/her name in the session, change in different session
     import random
@@ -108,77 +128,52 @@ def assign_name(group: Group): # assign each player his/her name in the session,
         p.name = names[i]
         p.participant.name = names[i]
 
-def assign_identity_payoff(group: Group, scenario): # function that is used to assgin the identiy to each player in each round under different scenairos
+def assign_identity_payoff(group: Group): # function that is used to assgin the identiy to each player in each round under different scenairos
     import random
     players = group.get_players() # return a list of all the players in the group
     identities = list(range(1,C.PLAYERS_PER_GROUP+1)) # generate the list of identity
     random.shuffle(identities)
+    scenario_decoded = decode_payoff_list(group.scenario)
 
     for p, i in zip(players, range(C.PLAYERS_PER_GROUP)):
         p.identity = identities[i]  # identity will change in every round
-        p.coop_payoff = scenario[0][int(p.identity - 1)] # assign the corresponding identity's payoff for each player
+        p.coop_payoff = scenario_decoded[int(p.identity - 1)] # assign the corresponding identity's payoff for each player
         p.noncoop_payoff = C.payoff_notcoop
         p.fail_payoff = C.payoff_fail
 
-def decode_payoff_list(scenario): # decode the payoff list I saved
-    payoff_list = scenario.split('-')
-    payoff_list = [int(s.strip()) for s in payoff_list]
-    return payoff_list
 
-
-'''
-def assign_scenario(subsession: Subssession, scenarios):
-    import random
-    random.shuffle(scenarios)
-    group = subsession.get_groups()
-    for g in group:
-        g.scenario = scenario[0]
-        g.threshold = scenario[1]
-'''
 
 def creating_session(subsession): # creating session for unknown and known
-    import random
-    scenarios = generate_scenarios()
+    scenarios = read_csv('public_goods_Yuping/scenarios_blocks.csv', Scenarios_list)
 
-    if subsession.round_number % C.ROUNDS_IN_BLOCK == 1  : # If the round number can be divided by Rounds in a block now is round 1 and 37
-        subsession.group_randomly()  # group randomly
+    if subsession.round_number % C.ROUNDS_IN_SESSION == 1  : # If the round number can be divided by Rounds in a block now is round 1 and 37
+        #subsession.group_randomly()  # group randomly
         groups = subsession.get_groups()
+        print(groups[0].get_players())
+
 
         # assign name in the game for each group
         for g in groups:
             assign_name(g)
+            g.scenario = scenarios[subsession.round_number - 1]['scenario'+str(g.id_in_subsession)]
+            g.threshold = scenarios[subsession.round_number - 1]['threshold'+str(g.id_in_subsession)]
+            g.block = scenarios[subsession.round_number - 1]['block' + str(g.id_in_subsession)]
+            assign_identity_payoff(g)  # assign identity for each player
+            # randomly assign the scenario for each group
 
-        # randomly assign the scenario for each group
-        for g in groups:
-            scenario = random.choice(scenarios)
-            g.scenario = scenario[0]
-            g.threshold = scenario[1]
-            assign_identity_payoff(g, scenario)  # assign identity for each player
 
     else:
-        subsession.group_like_round((subsession.round_number//C.ROUNDS_IN_BLOCK)+1) # it should be like round 1 or 37
+        subsession.group_like_round(((subsession.round_number-1)//C.ROUNDS_IN_SESSION)*48+1)
         groups = subsession.get_groups()
-
         for p in subsession.get_players():
             p.name = p.participant.name
 
         # assign the scenario for each group
         for g in groups:
-            scenario = random.choice(scenarios)
-            g.scenario = scenario[0]
-            g.threshold = scenario[1]
-            assign_identity_payoff(g, scenario) # assign identity for each player
-
-    # assign blocks
-    block_list = C.blocks
-    for g in subsession.get_groups():
-        random.shuffle(block_list)
-        if 1 <= subsession.round_number <= 16 or  49 <= subsession.round_number <= 64:
-            g.block = block_list[0]
-        elif 17 <= subsession.round_number <= 32 or  65 <= subsession.round_number <= 80:
-            g.block = block_list[1]
-        elif 33 <= subsession.round_number <= 48 or 81 <= subsession.round_number <= 96:
-            g.block = block_list[2]
+            g.scenario = scenarios[subsession.round_number - 1]['scenario' + str(g.id_in_subsession)]
+            g.threshold = scenarios[subsession.round_number - 1]['threshold' + str(g.id_in_subsession)]
+            g.block = scenarios[subsession.round_number - 1]['block' + str(g.id_in_subsession)]
+            assign_identity_payoff(g)  # assign identity for each player
 
 def set_payoffs(group:Group): # set the payoff of the decision made
     players = group.get_players()
@@ -193,7 +188,6 @@ def set_payoffs(group:Group): # set the payoff of the decision made
                 p.actual_payoff = p.noncoop_payoff
         else:
             p.actual_payoff = p.fail_payoff
-
 
 # PAGES
 class Introduction(Page):
@@ -242,10 +236,6 @@ class InstructionsWaitPage(WaitPage): # Wait for everyone in the same group to f
 class Show_payoff(Page):
 
     timeout_seconds = C.timeout_sec_showpayoff
-
-    '''@staticmethod
-    def is_displayed(player):  # built-in methods
-        return C.unknown_limit[1] >= player.round_number >= C.known_full[0] # don't need this line'''
 
     @staticmethod
     def vars_for_template(player: Player):  # Use this to pass variables to the template.
@@ -339,9 +329,7 @@ class ResultsWaitPage(WaitPage):
 
 
 class Results_known_full(Page):
-    '''
-    timeout_seconds = C.timeout_sec_results  # built-in
-    '''
+
     @staticmethod
     def is_displayed(player):  # built-in methods
         return player.group.block == 'known_full'
@@ -423,9 +411,7 @@ class Results_known_full(Page):
 
 
 class Results_known_limit(Page): # also can be used in down_down_up
-    '''
-    timeout_seconds = C.timeout_sec_results
-    '''
+
     @staticmethod
     def is_displayed(player):  # built-in methods
         return player.group.block == 'known_limit'
@@ -479,9 +465,7 @@ class Results_known_limit(Page): # also can be used in down_down_up
 
 
 class Results_unknown_limit(Page): # also can be used in known_limit
-    '''
-    timeout_seconds = C.timeout_sec_results
-    '''
+
     @staticmethod
     def is_displayed(player):  # built-in methods
         return player.group.block == 'unknown_limit'
@@ -530,4 +514,5 @@ class Finish(Page):
 
 page_sequence = [Introduction, Introduction2, Instructions_showpayoff, Instructions_decision, Instructions_results,  Instructions_unknown_limit, Instructions_known_full, Instructions_known_limit, InstructionsWaitPage, Show_payoff, Decision_known, Decision_unknown, ResultsWaitPage, Results_known_full, Results_known_limit, Results_unknown_limit, Finish ]
 
-        
+
+
